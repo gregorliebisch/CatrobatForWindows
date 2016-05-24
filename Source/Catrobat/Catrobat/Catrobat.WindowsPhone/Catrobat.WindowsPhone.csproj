@@ -225,6 +225,15 @@
     <Compile Include="Views\Main\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Main\OnlinePrograms\CategoryView.xaml.cs" />
+    <Compile Include="Views\Main\OnlinePrograms\FeaturedProgramView.xaml.cs" />
+    <Compile Include="Views\Main\OnlinePrograms\OnlineProgramsMainView.xaml.cs" />
+    <Compile Include="Views\Main\OnlinePrograms\OnlineProgramsView.xaml.cs" />
+    <Compile Include="Views\Main\OnlinePrograms\ProgramsView.xaml.cs" />
+    <Compile Include="Views\Main\OnlinePrograms\ProgramView.xaml.cs" />
+    <Compile Include="Views\Main\OnlineProjects\OnlineCategoryView.xaml.cs" />
+    <Compile Include="Views\Main\OnlineProjects\OnlineProjectsView.xaml.cs" />
+    <Compile Include="Views\Main\OnlineProjects\OnlineProjectView.xaml.cs" />
     <Compile Include="Views\Main\PlayerView.xaml.cs">
       <DependentUpon>PlayerView.xaml</DependentUpon>
     </Compile>
@@ -682,6 +691,42 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Main\MainView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Main\OnlinePrograms\CategoryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Main\OnlinePrograms\FeaturedProgramView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Main\OnlinePrograms\OnlineProgramsMainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Main\OnlinePrograms\OnlineProgramsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Main\OnlinePrograms\ProgramsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Main\OnlinePrograms\ProgramView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Main\OnlineProjects\OnlineCategoryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Main\OnlineProjects\OnlineProjectsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Main\OnlineProjects\OnlineProjectView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
