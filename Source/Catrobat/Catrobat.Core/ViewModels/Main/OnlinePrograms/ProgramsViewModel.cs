@@ -153,8 +153,7 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
       HttpClient httpClient = new HttpClient();
       httpClient.BaseAddress = new Uri("https://share.catrob.at/pocketcode/api/");
 
-      var query = "CatrobatProjects[name=" + SearchText + "]";
-      var encodedSearchText = WebUtility.UrlEncode(query);
+      var encodedSearchText = WebUtility.UrlEncode(SearchText);
       HttpResponseMessage httpResponse = await httpClient.GetAsync(
                               string.Format(ApplicationResourcesHelper.Get("API_SEARCH_PROJECTS"), encodedSearchText,
                               10, 0), cToken);
