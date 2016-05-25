@@ -162,7 +162,7 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
       var jsonResult = await httpResponse.Content.ReadAsStringAsync();
       var retrievedPrograms = await Task.Run(() => Newtonsoft.Json.JsonConvert.DeserializeObject<OnlineProgramOverview>(jsonResult));
 
-      for (var i = 0; i < 10; ++i)
+      for (var i = 0; i < retrievedPrograms.CatrobatProjects.Count; ++i)
       {
         SearchResults.Add(
           new ProgramViewModel(
