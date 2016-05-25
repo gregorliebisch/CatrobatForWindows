@@ -231,9 +231,6 @@
     <Compile Include="Views\Main\OnlinePrograms\OnlineProgramsView.xaml.cs" />
     <Compile Include="Views\Main\OnlinePrograms\ProgramsView.xaml.cs" />
     <Compile Include="Views\Main\OnlinePrograms\ProgramView.xaml.cs" />
-    <Compile Include="Views\Main\OnlineProjects\OnlineCategoryView.xaml.cs" />
-    <Compile Include="Views\Main\OnlineProjects\OnlineProjectsView.xaml.cs" />
-    <Compile Include="Views\Main\OnlineProjects\OnlineProjectView.xaml.cs" />
     <Compile Include="Views\Main\PlayerView.xaml.cs">
       <DependentUpon>PlayerView.xaml</DependentUpon>
     </Compile>
@@ -717,18 +714,6 @@
     <Page Include="Views\Main\OnlinePrograms\ProgramView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Main\OnlineProjects\OnlineCategoryView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Main\OnlineProjects\OnlineProjectsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Main\OnlineProjects\OnlineProjectView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Main\PlayerView.xaml">
       <Generator>MSBuild:Compile</Generator>
