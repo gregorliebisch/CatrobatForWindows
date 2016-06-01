@@ -118,8 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="API_BASE_ADDRESS" xml:space="preserve">
-    <value>https://catroid-test.catrob.at/api/</value>
-    <comment>testing: https://catroid-test.catrob.at/api/ release: https://pocketcode.org/api/</comment>
+    <value>https://share.catrob.at/pocketcode/api/</value>
+    <comment>testing: https://catroid-test.catrob.at/api/ release: https://pocketcode.org/api/
+actual value is working now</comment>
   </data>
   <data name="API_CHECK_TOKEN" xml:space="preserve">
     <value>checkToken/check.json</value>

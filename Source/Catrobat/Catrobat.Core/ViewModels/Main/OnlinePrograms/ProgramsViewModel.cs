@@ -54,7 +54,7 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
       }
     }
 
-    public ProgramViewModel FeaturedProgram { get; private set; }
+    public ObservableCollection<ProgramViewModel> FeaturedPrograms { get; private set; }
 
     public ObservableCollection<CategoryViewModel> Categories { get; set; }
 
@@ -71,6 +71,7 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
       InSearchMode = false;
       SearchText = "";
       Categories = new ObservableCollection<CategoryViewModel>();
+      FeaturedPrograms = new ObservableCollection<ProgramViewModel>();
 
       for (int i = 0; i < CategoryOnlineNames.Length; ++i)
       {
@@ -87,29 +88,27 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
     {
       System.Threading.CancellationToken cToken = new System.Threading.CancellationToken();
       HttpClient httpClient = new HttpClient();
-      httpClient.BaseAddress = new Uri("https://share.catrob.at/pocketcode/api/");
+      httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("API_BASE_ADDRESS"));
       HttpResponseMessage httpResponse = null;
       string jsonResult;
-
-      /*
-      //ERROR IN FEATURED PROJECTS DUNNO WHY ATM
+      
       //Get featured Program
       httpResponse = await httpClient.GetAsync(
         string.Format(ApplicationResourcesHelper.Get("API_FEATURED_PROJECTS"),
-        1, 0);, cToken);
+        1, 0), cToken);
       httpResponse.EnsureSuccessStatusCode();
-      //TRY CATCH TO CHECK IF INTERNET CONNECTION WAS AVAILABLE AND SET "NO INTERNET CONNECTION" BUT IF ERROR
       jsonResult = await httpResponse.Content.ReadAsStringAsync();
       var featuredPrograms = await Task.Run(() => Newtonsoft.Json.JsonConvert.DeserializeObject<OnlineProgramOverview>(jsonResult));
 
-      FeaturedProgram = new ProgramViewModel(
-        new Program
-        {
-          Title = featuredPrograms.CatrobatProjects[0].ProjectName,
-          ImageSource = new Uri(featuredPrograms.CatrobatProjects[0].ScreenshotBig)
-        });
-
-      */
+      for (var i = 0; i < featuredPrograms.CatrobatProjects.Count; ++i)
+      {
+        FeaturedPrograms.Add(new ProgramViewModel(
+          new Program
+          {
+            Title = featuredPrograms.CatrobatProjects[0].ProjectName,
+            ImageSource = new Uri(featuredPrograms.CatrobatProjects[0].FeaturedImage)
+          }));
+      }
 
       //Set 2 Progams for each Category
       foreach (var category in Categories)
@@ -151,7 +150,7 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
       System.Threading.CancellationToken cToken = new System.Threading.CancellationToken();
 
       HttpClient httpClient = new HttpClient();
-      httpClient.BaseAddress = new Uri("https://share.catrob.at/pocketcode/api/");
+      httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("API_BASE_ADDRESS"));
 
       var encodedSearchText = WebUtility.UrlEncode(SearchText);
       HttpResponseMessage httpResponse = await httpClient.GetAsync(
