@@ -22,29 +22,25 @@
         Foreground="Gray"
         Text="featured"
         TextAlignment="Center"/>
-      <ScrollViewer>
-        <Grid>
-          <ListView     
+      <ListView     
             ItemsSource="{Binding}"
             ItemTemplate="{StaticResource ProgramsTemplate}"
             Margin="0">
-            <ListView.ItemsPanel>
-              <ItemsPanelTemplate>
-                <toolkit:UniformGrid 
+        <ListView.ItemsPanel>
+          <ItemsPanelTemplate>
+            <toolkit:UniformGrid 
                   Columns="1" 
                   Rows="1"/>
-              </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemContainerStyle>
-              <Style TargetType="ListViewItem">
-                <Setter 
+          </ItemsPanelTemplate>
+        </ListView.ItemsPanel>
+        <ListView.ItemContainerStyle>
+          <Style TargetType="ListViewItem">
+            <Setter 
                   Property="Width"
                   Value="Auto" />
-              </Style>
-            </ListView.ItemContainerStyle>
-          </ListView>
-        </Grid>
-      </ScrollViewer>
+          </Style>
+        </ListView.ItemContainerStyle>
+      </ListView>
     </StackPanel>
   </Grid>
 </UserControl>

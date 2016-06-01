@@ -8,8 +8,7 @@
   xmlns:foundation="using:Windows.Foundation"
   mc:Ignorable="d"
   d:DesignHeight="300"
-  d:DesignWidth="300"
-  Margin="5">
+  d:DesignWidth="300">
   <Button 
     Command="{Binding ShowFullCommand}"           
     HorizontalAlignment="Stretch"
