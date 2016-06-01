@@ -113,6 +113,11 @@
         Foreground="Black"
         Text="Check Internet Connection"
         TextAlignment="Center"/>
+        <Button 
+            Content="R"
+            Command="{Binding ReloadCommand}"
+            HorizontalAlignment="Center"
+            Style="{StaticResource RoundButtonStyle}"/>
       </Grid>
     </Grid>
   </ScrollViewer>

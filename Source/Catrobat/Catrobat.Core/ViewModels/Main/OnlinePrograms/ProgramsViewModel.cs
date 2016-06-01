@@ -82,6 +82,8 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
 
     public ICommand ExitSearchCommand => new RelayCommand(ExitSearch, CanExitSearch);
 
+    public ICommand ReloadCommand => new RelayCommand(ReloadOnlinePrograms);
+
     public ProgramsViewModel()
     {
       InSearchMode = false;
@@ -92,7 +94,7 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
       for (int i = 0; i < CategoryOnlineNames.Length; ++i)
       {
         Categories.Add(new CategoryViewModel(
-          new Category { DisplayName = CategoryOnlineNames[i], OnlineName = CategoryOnlineNames[i], SearchKeyWork = CategorySearchKeyWords[i] }));
+          new Category { DisplayName = CategoryOnlineNames[i], OnlineName = CategoryOnlineNames[i], SearchKeyWork = CategorySearchKeyWords[i] }, this));
       }
 
       LoadOnlinePrograms();
@@ -140,37 +142,54 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
 
     private async void LoadOnlinePrograms()
     {
-      var featuredPrograms = await GetPrograms(0, 10, "API_FEATURED_PROJECTS");
-      IsInternetAvailable = featuredPrograms.Count != 0;
-
-      foreach (var project in featuredPrograms)
+      if (FeaturedPrograms.Count == 0)
       {
-        FeaturedPrograms.Add(new ProgramViewModel(
-          new Program
-          {
-            Title = project.ProjectName,
-            ImageSource = new Uri(project.FeaturedImage)
-          }));
-      }
+        var featuredPrograms = await GetPrograms(0, 10, "API_FEATURED_PROJECTS");
+        IsInternetAvailable = featuredPrograms.Count != 0;
+
+        foreach (var project in featuredPrograms)
+        {
+          FeaturedPrograms.Add(new ProgramViewModel(
+            new Program
+            {
+              Title = project.ProjectName,
+              ImageSource = new Uri(project.FeaturedImage)
+            }));
+        }
+      }     
 
       //Set 2 Progams for each Category
       foreach (var category in Categories)
       {
-        var resultPrograms = await GetPrograms(0, 2, category.SearchKeyWord);
-        IsInternetAvailable = resultPrograms.Count != 0;
-
-        foreach (var project in resultPrograms)
+        if (category.Programs.Count == 0)
         {
-          category.Programs.Add(
-            new ProgramViewModel(
-              new Program
-              {
-                Title = project.ProjectName,
-                ImageSource = new Uri(project.ScreenshotBig)
-              }));
-        }
-      }
+          var resultPrograms = await GetPrograms(0, 2, category.SearchKeyWord);
+          IsInternetAvailable = resultPrograms.Count != 0;
 
+          foreach (var project in resultPrograms)
+          {
+            category.Programs.Add(
+              new ProgramViewModel(
+                new Program
+                {
+                  Title = project.ProjectName,
+                  ImageSource = new Uri(project.ScreenshotBig)
+                }));
+          }
+        }        
+      }
+    }
+
+    private void ReloadOnlinePrograms()
+    {
+      if (InSearchMode)
+      {
+        Search();
+      }
+      else
+      {
+        LoadOnlinePrograms();
+      }
     }
 
     private bool CanSearch()
@@ -216,8 +235,10 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
           ReloadPrograms = true;
       }
 
-      if(ReloadPrograms)
-        LoadOnlinePrograms();
+      if (ReloadPrograms)
+        ReloadOnlinePrograms();
+      else
+        IsInternetAvailable = true;
     }
   }
 }

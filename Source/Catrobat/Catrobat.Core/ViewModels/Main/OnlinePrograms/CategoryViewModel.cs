@@ -20,6 +20,8 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
   {
     private Category Category { get; set; }
 
+    private ProgramsViewModel _programsViewModel;
+
     public string DisplayName
     {
       get { return Category.DisplayName; }
@@ -69,10 +71,10 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
 
     public ICommand ShowMoreCommand => new RelayCommand(ShowMore, CanShowMore);
 
-    public CategoryViewModel(Category category)
+    public CategoryViewModel(Category category, ProgramsViewModel programsViewModel)
     {
       Category = category;
-
+      _programsViewModel = programsViewModel;
       Programs = new ObservableCollection<ProgramViewModel>();
     }
 
@@ -87,20 +89,18 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
     private async void ShowMore()
     {
       var retrievedPrograms = await ProgramsViewModel.GetPrograms(Programs.Count, 2, SearchKeyWord);
-      
-      //TODO: check internet connection here
+      _programsViewModel.IsInternetAvailable = retrievedPrograms.Count != 0;   
 
-      for (var i = 0; i < 2; ++i)
+      foreach (var project in retrievedPrograms)
       {
         Programs.Add(
-          new ProgramViewModel(
+           new ProgramViewModel(
             new Program
             {
-              Title = retrievedPrograms[i].ProjectName,
-              ImageSource = new Uri(retrievedPrograms[i].ScreenshotBig)
+              Title = project.ProjectName,
+              ImageSource = new Uri(project.ScreenshotBig)
             }));
       }
-
     }
   }
 }
