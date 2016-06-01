@@ -95,18 +95,18 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
       //Get featured Program
       httpResponse = await httpClient.GetAsync(
         string.Format(ApplicationResourcesHelper.Get("API_FEATURED_PROJECTS"),
-        1, 0), cToken);
+        10, 0), cToken);
       httpResponse.EnsureSuccessStatusCode();
       jsonResult = await httpResponse.Content.ReadAsStringAsync();
       var featuredPrograms = await Task.Run(() => Newtonsoft.Json.JsonConvert.DeserializeObject<OnlineProgramOverview>(jsonResult));
 
-      for (var i = 0; i < featuredPrograms.CatrobatProjects.Count; ++i)
+      foreach(var project in featuredPrograms.CatrobatProjects)
       {
         FeaturedPrograms.Add(new ProgramViewModel(
           new Program
           {
-            Title = featuredPrograms.CatrobatProjects[0].ProjectName,
-            ImageSource = new Uri(featuredPrograms.CatrobatProjects[0].FeaturedImage)
+            Title = project.ProjectName,
+            ImageSource = new Uri(project.FeaturedImage)
           }));
       }
 
