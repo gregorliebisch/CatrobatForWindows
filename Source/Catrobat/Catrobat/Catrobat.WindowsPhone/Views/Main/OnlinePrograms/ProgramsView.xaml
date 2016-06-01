@@ -78,7 +78,10 @@
               Converter={StaticResource BoolVisibilityConverter}}"/>
         </Grid>
       </StackPanel>
-      <Grid Grid.Row="1">
+      <Grid Grid.Row="1"
+        Visibility="{Binding 
+              Path=IsInternetAvailable, 
+              Converter={StaticResource BoolVisibilityConverter}}">
         <ListView   
           ItemsSource="{Binding SearchResults}"
           ItemTemplate="{StaticResource SearchResultTemplate}"
@@ -100,6 +103,16 @@
             ItemsSource="{Binding Categories}"
             ItemTemplate="{StaticResource CategoryTemplate}"/>
         </StackPanel>
+      </Grid>
+      <Grid Grid.Row="1"
+        Visibility="{Binding 
+              Path=IsInternetAvailable, 
+              Converter={StaticResource BoolVisibilityNegativeConverter}}">
+        <TextBlock 
+        FontSize="25"
+        Foreground="Black"
+        Text="Check Internet Connection"
+        TextAlignment="Center"/>
       </Grid>
     </Grid>
   </ScrollViewer>

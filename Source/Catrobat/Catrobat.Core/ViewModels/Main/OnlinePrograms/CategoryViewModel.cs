@@ -50,7 +50,7 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
       }
     }
 
-    public string SearchKeyWork
+    public string SearchKeyWord
     {
       get { return Category.SearchKeyWork; }
       set
@@ -61,7 +61,7 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
         }
 
         Category.OnlineName = value;
-        RaisePropertyChanged(nameof(SearchKeyWork));
+        RaisePropertyChanged(nameof(SearchKeyWord));
       }
     }
 
@@ -86,16 +86,9 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
 
     private async void ShowMore()
     {
-      System.Threading.CancellationToken cToken = new System.Threading.CancellationToken();
-      HttpClient httpClient = new HttpClient();
-      httpClient.BaseAddress = new Uri("https://share.catrob.at/pocketcode/api/");
-
-      HttpResponseMessage httpResponse = await httpClient.GetAsync(
-        string.Format(ApplicationResourcesHelper.Get(SearchKeyWork),
-          2, Programs.Count), cToken);
-      httpResponse.EnsureSuccessStatusCode();
-      var jsonResult = await httpResponse.Content.ReadAsStringAsync();
-      var retrievedPrograms = await Task.Run(() => Newtonsoft.Json.JsonConvert.DeserializeObject<OnlineProgramOverview>(jsonResult));
+      var retrievedPrograms = await ProgramsViewModel.GetPrograms(Programs.Count, 2, SearchKeyWord);
+      
+      //TODO: check internet connection here
 
       for (var i = 0; i < 2; ++i)
       {
@@ -103,8 +96,8 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
           new ProgramViewModel(
             new Program
             {
-              Title = retrievedPrograms.CatrobatProjects[i].ProjectName,
-              ImageSource = new Uri(retrievedPrograms.CatrobatProjects[i].ScreenshotBig)
+              Title = retrievedPrograms[i].ProjectName,
+              ImageSource = new Uri(retrievedPrograms[i].ScreenshotBig)
             }));
       }
 

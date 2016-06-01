@@ -11,6 +11,8 @@ using Catrobat.Core.Models.OnlinePrograms;
 using Catrobat.Core.Resources;
 using Catrobat.IDE.Core.CatrobatObjects;
 using GalaSoft.MvvmLight;
+using System.Net.NetworkInformation;
+using Windows.Networking.Connectivity;
 
 namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
 {
@@ -21,6 +23,7 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
     private static readonly string[] CategorySearchKeyWords = { "API_RECENT_PROJECTS", "API_MOSTDOWNLOADED_PROJECTS", "API_MOSTVIEWED_PROJECTS" };
 
     private bool _inSearchMode;
+    private bool _isInternetAvailable;
 
     private string _searchText;
 
@@ -36,6 +39,21 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
 
         _inSearchMode = value;
         RaisePropertyChanged(nameof(InSearchMode));
+      }
+    }
+
+    public bool IsInternetAvailable
+    {
+      get { return _isInternetAvailable; }
+      set
+      {
+        if (_isInternetAvailable == value)
+        {
+          return;
+        }
+
+        _isInternetAvailable = value;
+        RaisePropertyChanged(nameof(IsInternetAvailable));
       }
     }
 
@@ -66,8 +84,6 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
 
     public ProgramsViewModel()
     {
-      //check if internet connection is available
-
       InSearchMode = false;
       SearchText = "";
       Categories = new ObservableCollection<CategoryViewModel>();
@@ -84,23 +100,50 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
       SearchResults = new ObservableCollection<ProgramViewModel>();
     }
 
-    public async void LoadOnlinePrograms()
+    public static async Task<List<OnlineProgramHeader>> GetPrograms(int Offset, int Count, string CategorySearchKeyWords, string SearchText = null)
     {
-      System.Threading.CancellationToken cToken = new System.Threading.CancellationToken();
-      HttpClient httpClient = new HttpClient();
-      httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("API_BASE_ADDRESS"));
-      HttpResponseMessage httpResponse = null;
-      string jsonResult;
-      
-      //Get featured Program
-      httpResponse = await httpClient.GetAsync(
-        string.Format(ApplicationResourcesHelper.Get("API_FEATURED_PROJECTS"),
-        10, 0), cToken);
-      httpResponse.EnsureSuccessStatusCode();
-      jsonResult = await httpResponse.Content.ReadAsStringAsync();
-      var featuredPrograms = await Task.Run(() => Newtonsoft.Json.JsonConvert.DeserializeObject<OnlineProgramOverview>(jsonResult));
+      try
+      {
+        System.Threading.CancellationToken cToken = new System.Threading.CancellationToken();
+        HttpClient httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("API_BASE_ADDRESS"));
+        HttpResponseMessage httpResponse = null;
 
-      foreach(var project in featuredPrograms.CatrobatProjects)
+        if (SearchText != null)
+        {
+          var encodedSearchText = WebUtility.UrlEncode(SearchText);
+          httpResponse = await httpClient.GetAsync(
+                                  string.Format(ApplicationResourcesHelper.Get(CategorySearchKeyWords), encodedSearchText,
+                                  Count, Offset), cToken);
+        }
+        else
+        {
+          httpResponse = await httpClient.GetAsync(
+          string.Format(ApplicationResourcesHelper.Get(CategorySearchKeyWords),
+          Count, Offset), cToken);
+        }
+
+        httpResponse.EnsureSuccessStatusCode();
+
+        string jsonResult = await httpResponse.Content.ReadAsStringAsync();
+        var featuredPrograms = await Task.Run(() => Newtonsoft.Json.JsonConvert.DeserializeObject<OnlineProgramOverview>(jsonResult));
+
+        return featuredPrograms.CatrobatProjects;
+      }
+      catch (Exception)
+      {
+        //There was probably no working internet connection
+        return new List<OnlineProgramHeader>();
+      }
+      
+    }
+
+    private async void LoadOnlinePrograms()
+    {
+      var featuredPrograms = await GetPrograms(0, 10, "API_FEATURED_PROJECTS");
+      IsInternetAvailable = featuredPrograms.Count != 0;
+
+      foreach (var project in featuredPrograms)
       {
         FeaturedPrograms.Add(new ProgramViewModel(
           new Program
@@ -113,21 +156,17 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
       //Set 2 Progams for each Category
       foreach (var category in Categories)
       {
-        httpResponse = await httpClient.GetAsync(
-          string.Format(ApplicationResourcesHelper.Get(category.SearchKeyWork),
-          2, 0), cToken);
-        httpResponse.EnsureSuccessStatusCode();
-        jsonResult = await httpResponse.Content.ReadAsStringAsync();
-        var retrievedPrograms = await Task.Run(() => Newtonsoft.Json.JsonConvert.DeserializeObject<OnlineProgramOverview>(jsonResult));
+        var resultPrograms = await GetPrograms(0, 2, category.SearchKeyWord);
+        IsInternetAvailable = resultPrograms.Count != 0;
 
-        for (var i = 0; i < 2; ++i)
+        foreach (var project in resultPrograms)
         {
           category.Programs.Add(
             new ProgramViewModel(
               new Program
               {
-                Title = retrievedPrograms.CatrobatProjects[i].ProjectName,
-                ImageSource = new Uri(retrievedPrograms.CatrobatProjects[i].ScreenshotBig)
+                Title = project.ProjectName,
+                ImageSource = new Uri(project.ScreenshotBig)
               }));
         }
       }
@@ -146,29 +185,17 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
 
     private async void Search()
     {
-      
-      System.Threading.CancellationToken cToken = new System.Threading.CancellationToken();
+      var retrievedPrograms = await GetPrograms(0, 10, "API_SEARCH_PROJECTS", SearchText);
+      IsInternetAvailable = retrievedPrograms.Count != 0;
 
-      HttpClient httpClient = new HttpClient();
-      httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("API_BASE_ADDRESS"));
-
-      var encodedSearchText = WebUtility.UrlEncode(SearchText);
-      HttpResponseMessage httpResponse = await httpClient.GetAsync(
-                              string.Format(ApplicationResourcesHelper.Get("API_SEARCH_PROJECTS"), encodedSearchText,
-                              10, 0), cToken);
-
-      httpResponse.EnsureSuccessStatusCode();
-      var jsonResult = await httpResponse.Content.ReadAsStringAsync();
-      var retrievedPrograms = await Task.Run(() => Newtonsoft.Json.JsonConvert.DeserializeObject<OnlineProgramOverview>(jsonResult));
-
-      for (var i = 0; i < retrievedPrograms.CatrobatProjects.Count; ++i)
+      foreach (var project in retrievedPrograms)
       {
         SearchResults.Add(
           new ProgramViewModel(
             new Program
             {
-              Title = retrievedPrograms.CatrobatProjects[i].ProjectName,
-              ImageSource = new Uri(retrievedPrograms.CatrobatProjects[i].ScreenshotBig)
+              Title = project.ProjectName,
+              ImageSource = new Uri(project.ScreenshotBig)
             }));
       }
 
@@ -178,10 +205,19 @@ namespace Catrobat.Core.ViewModels.Main.OnlinePrograms
     private void ExitSearch()
     {
       SearchResults.Clear();
-
       SearchText = "";
-
       InSearchMode = false;
+
+      bool ReloadPrograms = FeaturedPrograms.Count == 0;
+
+      foreach (var category in Categories)
+      {
+        if (category.Programs.Count == 0)
+          ReloadPrograms = true;
+      }
+
+      if(ReloadPrograms)
+        LoadOnlinePrograms();
     }
   }
 }
