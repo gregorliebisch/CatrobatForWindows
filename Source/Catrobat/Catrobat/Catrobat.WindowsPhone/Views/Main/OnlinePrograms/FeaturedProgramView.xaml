@@ -5,28 +5,22 @@
   xmlns:local="using:Catrobat.Views.Main.OnlinePrograms"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:controls="using:WinRTXamlToolkit.Controls"
+  xmlns:foundation="using:Windows.Foundation"
   mc:Ignorable="d"
   d:DesignHeight="300"
-  d:DesignWidth="400"
-  Margin="0,5">
-  <UserControl.Resources>
-    <DataTemplate x:Key="ProgramsTemplate">
-      <local:ProgramView/>
-    </DataTemplate>
-  </UserControl.Resources>
-  <Grid>
-    <StackPanel>
-      <TextBlock 
-        FontSize="25"
-        Foreground="Gray"
-        Text="featured"
-        TextAlignment="Center"/>
-      <ListView     
-            ItemsSource="{Binding}"
-            ItemTemplate="{StaticResource ProgramsTemplate}"
-            Margin="0">
-      </ListView>
-    </StackPanel>
-  </Grid>
+  d:DesignWidth="300"
+  Margin="5">
+  <Button 
+    Command="{Binding ShowFullCommand}"           
+    HorizontalAlignment="Stretch"
+    MinWidth="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
+    MinHeight="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
+    VerticalAlignment="Stretch">
+    <Button.Template>
+      <ControlTemplate>
+        <ContentPresenter/>
+      </ControlTemplate>
+    </Button.Template>
+    <Image Source="{Binding ImageSource}"/>
+  </Button>
 </UserControl>

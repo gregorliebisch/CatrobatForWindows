@@ -95,7 +95,7 @@
         <StackPanel Visibility="{Binding 
           Path=InSearchMode, 
           Converter={StaticResource BoolVisibilityNegativeConverter}}">
-          <local:FeaturedProgramView DataContext="{Binding FeaturedPrograms}"/>
+          <local:FeaturedProgramsView DataContext="{Binding FeaturedPrograms}"/>
           <ListView     
             ItemsSource="{Binding Categories}"
             ItemTemplate="{StaticResource CategoryTemplate}"/>
