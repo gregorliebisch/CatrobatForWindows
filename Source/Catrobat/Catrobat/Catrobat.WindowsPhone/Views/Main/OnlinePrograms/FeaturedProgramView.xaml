@@ -10,6 +10,11 @@
   d:DesignHeight="300"
   d:DesignWidth="400"
   Margin="0,5">
+  <UserControl.Resources>
+    <DataTemplate x:Key="ProgramsTemplate">
+      <local:ProgramView/>
+    </DataTemplate>
+  </UserControl.Resources>
   <Grid>
     <StackPanel>
       <TextBlock 
@@ -17,7 +22,11 @@
         Foreground="Gray"
         Text="featured"
         TextAlignment="Center"/>
-      <local:ProgramView Margin="0"/>
+      <ListView     
+            ItemsSource="{Binding}"
+            ItemTemplate="{StaticResource ProgramsTemplate}"
+            Margin="0">
+      </ListView>
     </StackPanel>
   </Grid>
 </UserControl>
