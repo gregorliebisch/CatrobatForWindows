@@ -7,18 +7,24 @@ namespace Catrobat.IDE.WindowsPhone.Views.Settings
 {
     public partial class SettingsView
     {
-        private readonly SettingsViewModel _viewModel = 
-            ServiceLocator.ViewModelLocator.SettingsViewModel;
+      private readonly SettingsViewModel _viewModel = 
+          ServiceLocator.ViewModelLocator.SettingsViewModel;
 
-        public SettingsView()
-        {
-            InitializeComponent();
-        }
+      public SettingsView()
+      {
+        InitializeComponent();
+      }
 
-        private void SettingsLanguage_OnTapped(object sender, TappedRoutedEventArgs e)
-        {
-            if (_viewModel.ShowLanguageSettingsCommand.CanExecute(null))
-            _viewModel.ShowLanguageSettingsCommand.Execute(null);
-        }
+      private void SettingsLanguage_OnTapped(object sender, TappedRoutedEventArgs e)
+      {
+        if (_viewModel.ShowLanguageSettingsCommand.CanExecute(null))
+          _viewModel.ShowLanguageSettingsCommand.Execute(null);
+      }
+
+      private void SettingsAccount_OnTapped(object sender, TappedRoutedEventArgs e)
+      {
+        if (_viewModel.ShowAccountSettingsCommand.CanExecute(null))
+          _viewModel.ShowAccountSettingsCommand.Execute(null);
+      }
     }
 }

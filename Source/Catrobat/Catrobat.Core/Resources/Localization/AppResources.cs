@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 01/08/2016 11:33:08
+// 	Generated: 11/17/2016 09:29:42
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace Catrobat.Core.Resources.Localization
@@ -3540,17 +3540,6 @@ namespace Catrobat.Core.Resources.Localization
                 return resourceLoader.GetString("Main_MessageBoxInformation");
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Sensors Missing.
-        /// </summary>
-        public static string Main_MessageBoxSensorsMissing
-        {
-            get
-            {
-                return resourceLoader.GetString("Main_MessageBoxSensorsMissing");
-            }
-        }
         
         /// <summary>
         /// Localized resource similar to "All downloads finished."
@@ -4693,6 +4682,50 @@ namespace Catrobat.Core.Resources.Localization
             get
             {
                 return resourceLoader.GetString("WhackAMole_MovingMole");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Sensors Missing"
+        /// </summary>
+        public static string Main_MessageBoxSensorsMissing
+        {
+            get
+            {
+                return resourceLoader.GetString("Main_MessageBoxSensorsMissing");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Delete {0} selected {1}? (Background can't be deleted)"
+        /// </summary>
+        public static string Editor_MessageBoxBackgroundDeleteText
+        {
+            get
+            {
+                return resourceLoader.GetString("Editor_MessageBoxBackgroundDeleteText");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Account Settings"
+        /// </summary>
+        public static string Main_AccountSettings
+        {
+            get
+            {
+                return resourceLoader.GetString("Main_AccountSettings");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Login, Register"
+        /// </summary>
+        public static string Main_AccountSettingsDescription
+        {
+            get
+            {
+                return resourceLoader.GetString("Main_AccountSettingsDescription");
             }
         }
     }

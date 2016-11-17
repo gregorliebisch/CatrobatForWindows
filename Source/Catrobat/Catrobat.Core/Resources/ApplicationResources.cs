@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 01/08/2016 11:32:54
+// 	Generated: 11/17/2016 10:15:10
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace Catrobat.Core.Resources
@@ -53,7 +53,7 @@ namespace Catrobat.Core.Resources
         }
         
         /// <summary>
-        /// Localized resource similar to "https://catroid-test.catrob.at/api/"
+        /// Localized resource similar to "https://share.catrob.at/pocketcode/api/"
         /// </summary>
         public static string API_BASE_ADDRESS
         {
