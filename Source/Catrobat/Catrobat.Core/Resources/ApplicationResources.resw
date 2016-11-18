@@ -208,7 +208,7 @@
   <data name="MIMETYPE" xml:space="preserve">
     <value>application/octet-stream</value>
   </data>
-  <data name="POCEKTCODE_BASE_ADDRESS" xml:space="preserve">
+  <data name="POCKETCODE_BASE_ADDRESS" xml:space="preserve">
     <value>https://share.catrob.at/</value>
   </data>
   <data name="PROJECT_LICENSE_URL" xml:space="preserve">

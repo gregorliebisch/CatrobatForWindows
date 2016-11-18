@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 11/18/2016 09:04:49
+// 	Generated: 11/18/2016 11:20:47
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace Catrobat.Core.Resources
@@ -385,11 +385,11 @@ namespace Catrobat.Core.Resources
         /// <summary>
         /// Localized resource similar to "https://share.catrob.at/"
         /// </summary>
-        public static string POCEKTCODE_BASE_ADDRESS
+        public static string POCKETCODE_BASE_ADDRESS
         {
             get
             {
-                return resourceLoader.GetString("POCEKTCODE_BASE_ADDRESS");
+                return resourceLoader.GetString("POCKETCODE_BASE_ADDRESS");
             }
         }
         

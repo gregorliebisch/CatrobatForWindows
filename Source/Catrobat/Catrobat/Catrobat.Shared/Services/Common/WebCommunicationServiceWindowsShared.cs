@@ -347,8 +347,7 @@ namespace Catrobat.IDE.WindowsShared.Services.Common
       HttpContent postParameters = new FormUrlEncodedContent(parameters);
       using (var httpClient = new HttpClient())
       {
-        //httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("POCEKTCODE_BASE_ADDRESS);
-        httpClient.BaseAddress = new Uri("https://catroid-test.catrob.at");
+        httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("API_BASE_ADDRESS"));
         JSONStatusResponse statusResponse = null;
         try
         {
@@ -381,15 +380,14 @@ namespace Catrobat.IDE.WindowsShared.Services.Common
     public async Task<JSONStatusResponse> RecoverPasswordAsync(string recoveryUserData, string language = "en")
     {
       var parameters = new List<KeyValuePair<string, string>>() {
-                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_RECOVER_PWD"), ((recoveryUserData == null) ? "" : recoveryUserData)),
-                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_LANGUAGE"), ((language == null) ? "" : language))
+                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_RECOVER_PWD"), recoveryUserData ?? ""),
+                 new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_LANGUAGE"), language ?? "")
             };
 
       HttpContent postParameters = new FormUrlEncodedContent(parameters);
       using (var httpClient = new HttpClient())
       {
-        //httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("POCEKTCODE_BASE_ADDRESS);
-        httpClient.BaseAddress = new Uri("https://catroid-test.catrob.at");
+        httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("POCKETCODE_BASE_ADDRESS"));
         JSONStatusResponse statusResponse = null;
         try
         {
@@ -430,7 +428,7 @@ namespace Catrobat.IDE.WindowsShared.Services.Common
       HttpContent postParameters = new FormUrlEncodedContent(parameters);
       using (var httpClient = new HttpClient())
       {
-        //httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("POCEKTCODE_BASE_ADDRESS);
+        //httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("POCKETCODE_BASE_ADDRESS"));
         httpClient.BaseAddress = new Uri("https://catroid-test.catrob.at");
         JSONStatusResponse statusResponse = null;
         try
