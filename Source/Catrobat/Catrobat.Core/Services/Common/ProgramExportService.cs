@@ -49,8 +49,7 @@ namespace Catrobat.IDE.Core.Services.Common
             _cancellationTokenSource = new CancellationTokenSource();
             JSONStatusResponse statusResponse = await Task.Run(() => 
                 ServiceLocator.WebCommunicationService.UploadProgramAsync(
-                programName, currentUserName, currentToken, _cancellationTokenSource.Token,
-                ServiceLocator.CultureService.GetCulture().TwoLetterISOLanguageName), _cancellationTokenSource.Token);
+                programName, currentUserName, currentToken, _cancellationTokenSource.Token), _cancellationTokenSource.Token);
 
             if (_cancellationTokenSource.Token.IsCancellationRequested == true)
             {

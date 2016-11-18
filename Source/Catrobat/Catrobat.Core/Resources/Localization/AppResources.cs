@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 11/17/2016 09:29:42
+// 	Generated: 11/18/2016 09:42:38
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace Catrobat.Core.Resources.Localization
@@ -4704,28 +4704,6 @@ namespace Catrobat.Core.Resources.Localization
             get
             {
                 return resourceLoader.GetString("Editor_MessageBoxBackgroundDeleteText");
-            }
-        }
-        
-        /// <summary>
-        /// Localized resource similar to "Account Settings"
-        /// </summary>
-        public static string Main_AccountSettings
-        {
-            get
-            {
-                return resourceLoader.GetString("Main_AccountSettings");
-            }
-        }
-        
-        /// <summary>
-        /// Localized resource similar to "Login, Register"
-        /// </summary>
-        public static string Main_AccountSettingsDescription
-        {
-            get
-            {
-                return resourceLoader.GetString("Main_AccountSettingsDescription");
             }
         }
     }

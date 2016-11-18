@@ -20,11 +20,5 @@ namespace Catrobat.IDE.WindowsPhone.Views.Settings
         if (_viewModel.ShowLanguageSettingsCommand.CanExecute(null))
           _viewModel.ShowLanguageSettingsCommand.Execute(null);
       }
-
-      private void SettingsAccount_OnTapped(object sender, TappedRoutedEventArgs e)
-      {
-        if (_viewModel.ShowAccountSettingsCommand.CanExecute(null))
-          _viewModel.ShowAccountSettingsCommand.Execute(null);
-      }
     }
 }

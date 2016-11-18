@@ -215,20 +215,21 @@ namespace Catrobat.IDE.WindowsShared.Services.Common
     public async Task<JSONStatusResponse> LoginOrRegisterAsync(string username, string password, string userEmail,
             string language = "en", string country = "AT")
     {
-      var parameters = new List<KeyValuePair<string, string>>() {
-                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_REG_USERNAME"), username ?? ""),
-                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_REG_PASSWORD"), password ?? ""),
-                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_REG_EMAIL"), userEmail ?? ""),
-                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_REG_COUNTRY"), country ?? ""),
-                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_LANGUAGE"), language ?? "")
-            };
+      var parameters = new List<KeyValuePair<string, string>> {
+              new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_REG_USERNAME"), username ?? ""),
+              new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_REG_PASSWORD"), password ?? ""),
+          };
+
+      if (userEmail != null)
+      {
+        parameters.Add(new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_REG_EMAIL"), userEmail));
+        parameters.Add(new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_REG_COUNTRY"), country ?? ""));
+      }
 
       HttpContent postParameters = new FormUrlEncodedContent(parameters);
       using (var httpClient = new HttpClient())
       {
-        //TODO WPH-255: remove test URL
-        httpClient.BaseAddress = new Uri("https://catroid-test.catrob.at/api/");
-        //httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("API_BASE_ADDRESS"));
+        httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("API_BASE_ADDRESS"));
         JSONStatusResponse statusResponse = null;
         try
         {
@@ -262,9 +263,8 @@ namespace Catrobat.IDE.WindowsShared.Services.Common
         string username, string token, CancellationToken taskCancellationToken, string language = "en")
     {
       var parameters = new List<KeyValuePair<string, string>>() {
-                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_USERNAME"), ((username == null) ? "" : username)),
-                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_TOKEN"), ((token == null) ? "" : token)),
-                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_LANGUAGE"), ((language == null) ? "" : language))
+                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_USERNAME"), username ?? ""),
+                new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_TOKEN"), token ?? "")
             };
 
       using (var postParameters = new MultipartFormDataContent())

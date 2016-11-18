@@ -119,7 +119,7 @@
   </resheader>
   <data name="API_BASE_ADDRESS" xml:space="preserve">
     <value>https://share.catrob.at/pocketcode/api/</value>
-    <comment>testing: https://catroid-test.catrob.at/api/ old_release: https://pocketcode.org/api/ new_release: https://share.catrob.at/pocketcode/api/ </comment>
+    <comment>testing: https://catroid-test.catrob.at/pocketcode/api/ old_release: https://pocketcode.org/api/ new_release: https://share.catrob.at/pocketcode/api/ </comment>
   </data>
   <data name="API_CHECK_TOKEN" xml:space="preserve">
     <value>checkToken/check.json</value>

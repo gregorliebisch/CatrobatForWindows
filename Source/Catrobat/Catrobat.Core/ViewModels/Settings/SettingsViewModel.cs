@@ -56,8 +56,6 @@ namespace Catrobat.IDE.Core.ViewModels.Settings
 
     public RelayCommand ShowLanguageSettingsCommand { get; private set; }
 
-    public RelayCommand ShowAccountSettingsCommand { get; private set; }
-
     #endregion
 
     #region Actions
@@ -75,11 +73,6 @@ namespace Catrobat.IDE.Core.ViewModels.Settings
     private static void ShowLanguageSettingsAction()
     {
       ServiceLocator.NavigationService.NavigateTo<SettingsLanguageViewModel>();
-    }
-
-    private static void ShowAccountSettingsAction()
-    {
-      ServiceLocator.NavigationService.NavigateTo<UploadProgramLoginViewModel>();
     }
 
     protected override void GoBackAction()
@@ -103,7 +96,6 @@ namespace Catrobat.IDE.Core.ViewModels.Settings
       ShowDesignSettingsCommand = new RelayCommand(ShowDesignSettingsAction);
       ShowBrickSettingsCommand = new RelayCommand(ShowBrickSettingsAction);
       ShowLanguageSettingsCommand = new RelayCommand(ShowLanguageSettingsAction);
-      ShowAccountSettingsCommand = new RelayCommand(ShowAccountSettingsAction);
 
       Messenger.Default.Register<GenericMessage<ThemeChooser>>(this,
            ViewModelMessagingToken.ThemeChooserListener, ThemeChooserInitializedMessageAction);

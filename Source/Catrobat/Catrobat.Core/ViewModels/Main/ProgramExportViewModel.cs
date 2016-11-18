@@ -92,8 +92,7 @@ namespace Catrobat.IDE.Core.ViewModels.Main
 
             JSONStatusResponse statusResponse = 
                 await ServiceLocator.WebCommunicationService.CheckTokenAsync(
-                Context.CurrentUserName, Context.CurrentToken, 
-                ServiceLocator.CultureService.GetCulture().TwoLetterISOLanguageName);
+                Context.CurrentUserName, Context.CurrentToken);
 
             if (statusResponse.statusCode == StatusCodes.ServerResponseOk)
             {

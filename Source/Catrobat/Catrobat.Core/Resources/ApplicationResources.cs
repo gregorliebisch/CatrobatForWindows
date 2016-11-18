@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 11/17/2016 10:15:10
+// 	Generated: 11/18/2016 09:04:49
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace Catrobat.Core.Resources
