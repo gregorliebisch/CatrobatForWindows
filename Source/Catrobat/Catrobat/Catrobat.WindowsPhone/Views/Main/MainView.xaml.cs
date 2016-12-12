@@ -65,7 +65,7 @@ namespace Catrobat.IDE.WindowsPhone.Views.Main
 
         private void Hub_SectionsInViewChanged(object sender, SectionsInViewChangedEventArgs e)
         {
-            if ((MainHub.SectionsInView[0] == HubSectionOnlinePrograms) && firstAttempt)
+            if (firstAttempt)
             {
                 firstAttempt = false;
 
