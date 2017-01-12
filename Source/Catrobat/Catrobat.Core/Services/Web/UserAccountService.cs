@@ -80,7 +80,7 @@ namespace Catrobat.IDE.Core.Services.Web
         return false;
       }
 
-      userToken_ = result.token;
+      UserToken = result.token;
 
       return true;
     }
@@ -105,14 +105,14 @@ namespace Catrobat.IDE.Core.Services.Web
         return false;
       }
 
-      userToken_ = result.token;
+      UserToken = result.token;
 
       return true;
     }
 
     public async Task<bool> Logout()
     {
-      userToken_ = "";
+      UserToken = "";
 
       return true;
     }
@@ -124,7 +124,7 @@ namespace Catrobat.IDE.Core.Services.Web
     private UserAccountService()
     {
       //TODO: load token if available?
-      userToken_ = "";
+      UserToken = "";
     }
 
     #endregion

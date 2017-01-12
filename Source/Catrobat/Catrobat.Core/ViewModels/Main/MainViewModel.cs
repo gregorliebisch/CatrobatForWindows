@@ -541,7 +541,7 @@ namespace Catrobat.IDE.Core.ViewModels.Main
 
         private void UserAccountService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-          if (e.PropertyName == nameof(UserAccountService.IsLoggedIn))
+          if (e.PropertyName == "IsLoggedIn") // UserAccountService.IsLoggedIn
           {
             RaisePropertyChanged(nameof(IsLoggedIn));
           }
