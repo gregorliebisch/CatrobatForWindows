@@ -11,7 +11,9 @@ using Catrobat.Core.Resources;
 using Catrobat.IDE.Core.CatrobatObjects;
 using GalaSoft.MvvmLight;
 using System.Threading;
+using Catrobat.IDE.Core.ExtensionMethods;
 using Catrobat.IDE.Core.Services;
+using Catrobat.IDE.Core.Services.Web;
 
 namespace Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms
 {
@@ -127,6 +129,7 @@ namespace Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms
       SearchResults = new ObservableCollection<SimpleProgramViewModel>();
 
       PropertyChanged += ProgramsViewModelPropertyChanged;
+      CommunicationService.Instance.PropertyChanged += CommuncationServicePropertyChanged;
 
       LoadFeaturedPrograms();
       InitializeCategories();
@@ -141,30 +144,12 @@ namespace Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms
       }
     }
 
-    #endregion
-
-    #region public helpers
-
-    public async Task<List<OnlineProgramHeader>> GetPrograms(int offset, int count, string category, CancellationToken cancellationToken, string additionalSearchText = null)
+    private void CommuncationServicePropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      List<OnlineProgramHeader> header;
-
-      try
+      if (e.PropertyName == nameof(CommunicationService.InternetAccessAvailable))
       {
-        header = await ServiceLocator.WebCommunicationService.
-          LoadOnlinePrograms(category, offset, count,
-            cancellationToken, additionalSearchText);
-
-        InternetAvailable = true;
+        InternetAvailable = CommunicationService.Instance.InternetAccessAvailable;
       }
-      catch (Exception)
-      {
-        //There was probably no working internet connection
-        InternetAvailable = false;
-        header = new List<OnlineProgramHeader>();
-      }
-
-      return header;
     }
 
     #endregion
@@ -175,25 +160,12 @@ namespace Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms
     {
       var cancellationToken = new CancellationToken();
 
-      var incompleteHeaders = await GetPrograms(InitialProgramOffset,
-        InitialNumberOfFeaturedPrograms, "API_FEATURED_PROJECTS",
-        cancellationToken);
+      var programInfos = await CommunicationService.Instance.
+        LoadFeaturedAsync(InitialProgramOffset, 
+          InitialNumberOfFeaturedPrograms, cancellationToken);
 
-      foreach (var incompleteHeader in incompleteHeaders)
-      {
-        var featuredProgramHeader = await GetPrograms(-1, -1, 
-          "API_GET_PROJECT_BY_ID", cancellationToken, 
-          incompleteHeader.ProjectId);
-
-        var completeHeader = featuredProgramHeader.First();
-        completeHeader.FeaturedImage = 
-          incompleteHeader.FeaturedImage.Replace(
-            ApplicationResourcesHelper.Get("POCEKTCODE_BASE_ADDRESS"), "");
-        
-        FeaturedPrograms.Add(
-          new SimpleProgramViewModel(
-            new ProgramInfo(completeHeader)));
-      }
+      FeaturedPrograms.AddRange(
+        programInfos.Select(pi => new SimpleProgramViewModel(pi)));
     }
 
     private void InitializeCategories()
@@ -223,23 +195,20 @@ namespace Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms
 
     private async void Search()
     {
-      var retrievedPrograms = await GetPrograms(
-        InitialProgramOffset, InitialNumberOfSearchedPrograms, 
-        "API_SEARCH_PROJECTS", new CancellationToken(), SearchText);
+      var retreivedPrograms = await CommunicationService.Instance.
+        SearchAsync(SearchText, InitialProgramOffset, 
+          InitialNumberOfSearchedPrograms, new CancellationToken());
 
-      if (retrievedPrograms.Count == 0)
+      if (retreivedPrograms.Count == 0)
       {
         NoSearchResults = true;
       }
       else
       {
         NoSearchResults = false;
-        foreach (var programHeader in retrievedPrograms)
-        {
-          SearchResults.Add(
-              new SimpleProgramViewModel(
-                new ProgramInfo(programHeader)));
-        }
+
+        SearchResults.AddRange(
+          retreivedPrograms.Select(p => new SimpleProgramViewModel(p)));
       }
       
       InSearchMode = true;

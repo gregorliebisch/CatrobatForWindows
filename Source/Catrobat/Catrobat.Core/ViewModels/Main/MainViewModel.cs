@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Catrobat.Core.Resources;
 using Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms;
+using Catrobat.IDE.Core.ViewModels.Main.UserAccount;
 
 namespace Catrobat.IDE.Core.ViewModels.Main
 {
@@ -179,6 +180,10 @@ namespace Catrobat.IDE.Core.ViewModels.Main
 
         public ICommand LicenseCommand { get; private set; }
 
+        public ICommand LoginCommand => new RelayCommand(LoginAction);
+
+        public ICommand LogoutCommand => new RelayCommand(LogoutAction);
+
         #endregion
 
         #region Actions
@@ -239,6 +244,17 @@ namespace Catrobat.IDE.Core.ViewModels.Main
         private void LicenseAction()
         {
             ServiceLocator.NavigationService.NavigateTo<InformationViewModel>();
+        }
+
+        private void LoginAction()
+        {
+            ServiceLocator.NavigationService.NavigateTo<LoginDecisionViewModel>();
+        }
+
+        private void LogoutAction()
+        {
+            //TODO: LOGOUT
+            throw new NotImplementedException();
         }
 
         protected override void GoBackAction()

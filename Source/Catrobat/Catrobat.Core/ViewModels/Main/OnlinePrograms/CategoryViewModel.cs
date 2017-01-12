@@ -7,6 +7,8 @@ using GalaSoft.MvvmLight.Command;
 using System.Collections.ObjectModel;
 using System.Threading;
 using Catrobat.IDE.Core.CatrobatObjects;
+using Catrobat.IDE.Core.ExtensionMethods;
+using Catrobat.IDE.Core.Services.Web;
 using GalaSoft.MvvmLight;
 
 namespace Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms
@@ -67,39 +69,42 @@ namespace Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms
     private async void ShowMore()
     {     
       while(true)
-      { 
-        var retrievedPrograms = await _programsViewModel.GetPrograms(
-          Programs.Count + _programOffset, ProgramsPerLine, 
-          Category.SearchKeyWord, new CancellationToken());
+      {
 
-        if (CheckForDuplicates(retrievedPrograms))
+        var programInfos = await CommunicationService.Instance.
+          LoadCategoryAsync(Category.SearchKeyWord, 
+            Programs.Count + _programOffset,
+            ProgramsPerLine, new CancellationToken());
+
+        if (!CheckForDuplicates(programInfos))
         {
-          _programOffset++;
-          continue;
+          Programs.AddRange(programInfos.Select(
+          pi => new SimpleProgramViewModel(pi)));
+
+          break;
         }
 
-        foreach (var project in retrievedPrograms)
-        {
-          Programs.Add(
-            new SimpleProgramViewModel(
-              new ProgramInfo(project)));
-        }
-        break;
+        _programOffset++;
       }
     }
 
-    private bool CheckForDuplicates(List<OnlineProgramHeader> retrievedPrograms)
+    private bool CheckForDuplicates(List<ProgramInfo> retrievedPrograms)
     {
+      if (retrievedPrograms.Count < 1)
+      {
+        return false;
+      }
+
       switch (Category.SearchKeyWord)
       {
         case "API_RECENT_PROJECTS":
-          return Programs.Any(p => p.Program.Uploaded <= ProgramInfo.FromUnixTime(retrievedPrograms.First().Uploaded));
+          return Programs.Any(p => p.Program.Uploaded <= retrievedPrograms.First().Uploaded);
 
         case "API_MOSTDOWNLOADED_PROJECTS":
-          return Programs.Any(p => p.Program.Downloads <= Convert.ToUInt32(retrievedPrograms.First().Downloads));
+          return Programs.Any(p => p.Program.Downloads <= retrievedPrograms.First().Downloads);
 
         case "API_MOSTVIEWED_PROJECTS":
-          return Programs.Any(p => p.Program.Views <= Convert.ToUInt32(retrievedPrograms.First().Views));
+          return Programs.Any(p => p.Program.Views <= retrievedPrograms.First().Views);
 
         default:
           throw new Exception("Unknown Category.SearchKeyWord: " + Category.SearchKeyWord);

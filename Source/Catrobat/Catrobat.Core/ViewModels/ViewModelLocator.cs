@@ -12,6 +12,7 @@ using Catrobat.IDE.Core.ViewModels.Settings;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Catrobat.IDE.Core.ViewModels.Main.UserAccount;
 
 namespace Catrobat.IDE.Core.ViewModels
 {
@@ -67,7 +68,10 @@ namespace Catrobat.IDE.Core.ViewModels
                 ServiceLocator.Register<InformationViewModel>(TypeCreationMode.Normal);
                 ServiceLocator.Register<PlayerViewModel>(TypeCreationMode.Normal);
                 ServiceLocator.Register<DetailedProgramViewModel>(TypeCreationMode.Normal);
-      }
+                ServiceLocator.Register<LoginDecisionViewModel>(TypeCreationMode.Normal);
+                ServiceLocator.Register<LoginViewModel>(TypeCreationMode.Normal);
+                ServiceLocator.Register<RegisterViewModel>(TypeCreationMode.Normal);
+            }
 
         }
 
@@ -516,13 +520,46 @@ namespace Catrobat.IDE.Core.ViewModels
         }
 
         [SuppressMessage("Microsoft.Performance",
-            "CA1822:MarkMembersAsStatic",
-            Justification = "This non-static member is needed for data binding purposes.")]
+          "CA1822:MarkMembersAsStatic",
+          Justification = "This non-static member is needed for data binding purposes.")]
         public DetailedProgramViewModel DetailedProgramViewModel
         {
           get
           {
             return ServiceLocator.GetInstance<DetailedProgramViewModel>();
+          }
+        }
+
+        [SuppressMessage("Microsoft.Performance",
+          "CA1822:MarkMembersAsStatic",
+          Justification = "This non-static member is needed for data binding purposes.")]
+        public LoginDecisionViewModel LoginDecisionViewModel
+        {
+          get
+          {
+            return ServiceLocator.GetInstance<LoginDecisionViewModel>();
+          }
+        }
+
+        [SuppressMessage("Microsoft.Performance",
+          "CA1822:MarkMembersAsStatic",
+          Justification = "This non-static member is needed for data binding purposes.")]
+        public LoginViewModel LoginViewModel
+        {
+          get
+          {
+            return ServiceLocator.GetInstance<LoginViewModel>();
+          }
+        }
+
+        [SuppressMessage("Microsoft.Performance",
+          "CA1822:MarkMembersAsStatic",
+          Justification = "This non-static member is needed for data binding purposes.")]
+        public RegisterViewModel RegisterViewModel
+        {
+          get
+          {
+            return ServiceLocator.GetInstance<RegisterViewModel>();
           }
         }
 

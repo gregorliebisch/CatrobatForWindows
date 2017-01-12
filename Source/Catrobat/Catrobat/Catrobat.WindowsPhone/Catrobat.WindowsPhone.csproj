@@ -258,6 +258,15 @@
     <Compile Include="Views\Main\ProgramSettingsView.xaml.cs">
       <DependentUpon>ProgramSettingsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Main\UserAccount\RegisterView.xaml.cs">
+      <DependentUpon>RegisterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Main\UserAccount\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Main\UserAccount\LoginDecisionView.xaml.cs">
+      <DependentUpon>LoginDecisionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Service\OnlineProgramReportView.xaml.cs">
       <DependentUpon>OnlineProgramReportView.xaml</DependentUpon>
     </Compile>
@@ -750,6 +759,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Main\UserAccount\RegisterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Main\UserAccount\LoginView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Main\UserAccount\LoginDecisionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Service\OnlineProgramReportView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -846,6 +867,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <PRIResource Include="Resources\de-DE\Resources.resw" />
     <PRIResource Include="Resources\en-US\Resources.resw" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">

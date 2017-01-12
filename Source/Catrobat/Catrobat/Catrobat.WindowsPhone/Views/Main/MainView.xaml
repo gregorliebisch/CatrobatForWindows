@@ -274,6 +274,15 @@
         <AppBarButton Label="{Binding Resources.Main_Settings, 
           Source={StaticResource LocalizedStrings}}"
           Command="{Binding SettingsCommand}"/>
+        <!-- TODO: Visibility -->
+        <AppBarButton 
+          x:Uid="Main_Login_Text"
+          Command="{Binding LoginCommand}"
+          Visibility="Visible"/>
+        <AppBarButton 
+          x:Uid="Main_Logout_Text"
+          Command="{Binding LogoutCommand}"
+          Visibility="Collapsed"/>
       </CommandBar.SecondaryCommands>
     </CommandBar>
   </Page.BottomAppBar>

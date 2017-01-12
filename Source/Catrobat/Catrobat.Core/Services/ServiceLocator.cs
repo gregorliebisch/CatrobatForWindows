@@ -167,7 +167,7 @@ namespace Catrobat.IDE.Core.Services
         public static ITraceService TraceService
         { get { return GetInstance<ITraceService>(); } }
 
-        #endregion
+    #endregion
 
         public static ViewModelLocator ViewModelLocator { get; set; }
 

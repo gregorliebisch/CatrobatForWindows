@@ -117,8 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DownloadProgram_CancelDownload_Text.Text" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="DownloadProgram_DownloadFinished_Text.Text" xml:space="preserve">
+    <value>Download abgeschlossen</value>
+  </data>
+  <data name="DownloadProgram_IsDownloading_Text.Text" xml:space="preserve">
+    <value>Lädt ...</value>
+  </data>
+  <data name="DownloadProgram_ShowProgram_Text.Text" xml:space="preserve">
+    <value>Zeige Program</value>
+  </data>
   <data name="OnlineDetails_Downloads_Unit.Text" xml:space="preserve">
-    <value>download(s)</value>
+    <value>Download(s)</value>
   </data>
   <data name="OnlineDetails_Download_Text.Text" xml:space="preserve">
     <value>DOWNLOAD</value>
@@ -127,75 +139,63 @@
     <value>MB</value>
   </data>
   <data name="OnlineDetails_Views_Unit.Text" xml:space="preserve">
-    <value>view(s)</value>
-  </data>
-  <data name="DownloadProgram_CancelDownload_Text.Text" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="DownloadProgram_DownloadFinished_Text.Text" xml:space="preserve">
-    <value>Download finished</value>
-  </data>
-  <data name="DownloadProgram_IsDownloading_Text.Text" xml:space="preserve">
-    <value>Downloading ...</value>
-  </data>
-  <data name="DownloadProgram_ShowProgram_Text.Text" xml:space="preserve">
-    <value>Show</value>
+    <value>Ansicht(en)</value>
   </data>
   <data name="LoginDecision_Header_Text.Text" xml:space="preserve">
-    <value>LOGIN</value>
+    <value>ANMELDEN</value>
   </data>
   <data name="LoginDecision_Login_Text.Text" xml:space="preserve">
-    <value>Login</value>
+    <value>Einloggen</value>
   </data>
   <data name="LoginDecision_Or_Text.Text" xml:space="preserve">
-    <value>OR</value>
+    <value>ODER</value>
   </data>
   <data name="LoginDecision_Register_Text.Text" xml:space="preserve">
-    <value>Register</value>
+    <value>Registrieren</value>
   </data>
   <data name="Login_Header_Text.Text" xml:space="preserve">
-    <value>LOGIN</value>
+    <value>ANMELDEN</value>
   </data>
   <data name="Login_LoginButton_Text.Content" xml:space="preserve">
-    <value>login</value>
+    <value>Einloggen</value>
   </data>
   <data name="Login_PasswordForgotten_Text.Content" xml:space="preserve">
-    <value>password forgotten?</value>
+    <value>Passwort vergessen?</value>
   </data>
   <data name="Login_Password_Text.Text" xml:space="preserve">
-    <value>password:</value>
+    <value>Passwort:</value>
   </data>
   <data name="Login_ShowPassword_Text.Content" xml:space="preserve">
-    <value>show password</value>
+    <value>Passwort anzeigen</value>
   </data>
   <data name="Login_Username_Text.Text" xml:space="preserve">
-    <value>username:</value>
+    <value>Benutzername:</value>
   </data>
   <data name="Main_Login_Text.Label" xml:space="preserve">
-    <value>login</value>
+    <value>Anmelden</value>
   </data>
   <data name="Main_Logout_Text.Label" xml:space="preserve">
-    <value>logout</value>
+    <value>Abmelden</value>
   </data>
   <data name="Register_Email_Text.Text" xml:space="preserve">
-    <value>e-mail:</value>
+    <value>E-mail:</value>
   </data>
   <data name="Register_Header_Text.Text" xml:space="preserve">
-    <value>REGISTER</value>
+    <value>REGISTRIEREN</value>
   </data>
   <data name="Register_Password_Text.Text" xml:space="preserve">
-    <value>password:</value>
+    <value>Passwort:</value>
   </data>
   <data name="Register_RegisterButton_Text.Content" xml:space="preserve">
-    <value>Register</value>
+    <value>Registrieren</value>
   </data>
   <data name="Register_RepeatPassword_Text.Text" xml:space="preserve">
-    <value>repeat password:</value>
+    <value>Passwort wiederholen:</value>
   </data>
   <data name="Register_ShowPassword_Text.Content" xml:space="preserve">
-    <value>show password</value>
+    <value>Passwort anzeigen</value>
   </data>
   <data name="Register_Username_Text.Text" xml:space="preserve">
-    <value>username:</value>
+    <value>Benutzername:</value>
   </data>
 </root>
