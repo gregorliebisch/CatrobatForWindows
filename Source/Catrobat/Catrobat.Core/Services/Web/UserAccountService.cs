@@ -4,16 +4,18 @@ using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using Catrobat.IDE.Core.Utilities.JSON;
+using GalaSoft.MvvmLight;
 
 namespace Catrobat.IDE.Core.Services.Web
 {
-  public sealed class UserAccountService
+  public sealed class UserAccountService : ObservableObject
   {
 
     #region attributes
 
     private static volatile UserAccountService instance_;
     private static readonly object SyncRoot = new object();
+    private string userToken_;
 
     #endregion
 
@@ -38,6 +40,22 @@ namespace Catrobat.IDE.Core.Services.Web
       }
     }
 
+    public string UserToken
+    {
+      get { return userToken_; }
+      set
+      {
+        if (value != userToken_)
+        {
+          userToken_ = value;
+          RaisePropertyChanged(nameof(UserToken));
+          RaisePropertyChanged(nameof(IsLoggedIn));
+        }
+      }
+    }
+
+    public bool IsLoggedIn => userToken_ != "";
+
     #endregion
 
     #region public methods
@@ -50,12 +68,50 @@ namespace Catrobat.IDE.Core.Services.Web
 
       if (languageCountry.Length != 2)
       {
-        //TODO: invalid culture info format; eg "en-US" expected
+        //TODO: invalid culture info format error; eg "en-US" expected
         return false;
       }
 
-      var result = await CommunicationService.Instance.RegisterAsync(username, email, password, languageCountry[0], languageCountry[1]);
+      var result = await CommunicationService.Instance.RegisterLoginAsync(username, password, email, languageCountry[0], languageCountry[1]);
 
+      if (result.statusCode != StatusCodes.ServerResponseOk)
+      {
+        //TODO: register failed error
+        return false;
+      }
+
+      userToken_ = result.token;
+
+      return true;
+    }
+
+    public async Task<bool> Login(string username, string password)
+    {
+      var ci = new CultureInfo(Windows.System.UserProfile.GlobalizationPreferences.Languages[0]);
+
+      var languageCountry = ci.Name.Split('-');
+
+      if (languageCountry.Length != 2)
+      {
+        //TODO: invalid culture info format error; eg "en-US" expected
+        return false;
+      }
+
+      var result = await CommunicationService.Instance.RegisterLoginAsync(username, password);
+
+      if (result.statusCode != StatusCodes.ServerResponseOk)
+      {
+        //TODO: login failed error
+        return false;
+      }
+
+      userToken_ = result.token;
+
+      return true;
+    }
+
+    public async Task<bool> Logout(string username, string password)
+    {
       return true;
     }
 
@@ -65,6 +121,8 @@ namespace Catrobat.IDE.Core.Services.Web
 
     private UserAccountService()
     {
+      //TODO: load token if available?
+      userToken_ = "";
     }
 
     #endregion

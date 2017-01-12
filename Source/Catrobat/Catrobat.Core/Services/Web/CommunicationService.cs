@@ -140,7 +140,7 @@ namespace Catrobat.IDE.Core.Services.Web
 
     #region user account
 
-    public async Task<JSONStatusResponse> RegisterAsync(string username, string email, string password, string languageCode, string countryCode)
+    public async Task<JSONStatusResponse> RegisterLoginAsync(string username, string password, string email = "", string languageCode = "", string countryCode = "")
     {
       var parameters = new List<KeyValuePair<string, string>>()
       {

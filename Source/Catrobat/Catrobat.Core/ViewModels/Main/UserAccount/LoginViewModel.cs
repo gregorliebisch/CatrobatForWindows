@@ -8,6 +8,7 @@ using Catrobat.IDE.Core.Services;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Catrobat.Core.Resources.Localization;
+using Catrobat.IDE.Core.Services.Web;
 using Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms;
 
 namespace Catrobat.IDE.Core.ViewModels.Main.UserAccount
@@ -84,11 +85,48 @@ namespace Catrobat.IDE.Core.ViewModels.Main.UserAccount
 
     #region helper
 
-    private async void Login()
+    private void ResetAttributes()
     {
-      var msgdlg = new MessageDialog("Not implemented nor successful!");
+      Username = "";
+      Password = "";
+      ShowPassword = false;
+    }
+
+    private async void ShowDialog(string message)
+    {
+      var msgdlg = new MessageDialog(message);
 
       await msgdlg.ShowAsync();
+    }
+
+    private bool SimpleInputCheck()
+    {
+      if (Username == "")
+      {
+        ShowDialog("invalid username");
+        return false;
+      }
+
+      if (Password == "")
+      {
+        ShowDialog("invalid password");
+        return false;
+      }
+
+      return true;
+    }
+
+    private async void Login()
+    {
+      if (!SimpleInputCheck())
+      {
+        return;
+      }
+
+      if (!(await UserAccountService.Instance.Login(Username, Password)))
+      {
+        ShowDialog("error occured - please check your input");
+      }
     }
 
     private async void PasswordForgotten()
