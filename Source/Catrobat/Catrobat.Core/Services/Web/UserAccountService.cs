@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
+using Catrobat.IDE.Core.ExtensionMethods;
+using Catrobat.IDE.Core.Services.Storage;
 using Catrobat.IDE.Core.Utilities.JSON;
 using GalaSoft.MvvmLight;
 
@@ -15,7 +20,9 @@ namespace Catrobat.IDE.Core.Services.Web
 
     private static volatile UserAccountService instance_;
     private static readonly object SyncRoot = new object();
-    private string userToken_;
+
+    private static readonly string LoginInfoFileName = "LoginInfo";
+    private LoginInfo loginInfo_;
 
     #endregion
 
@@ -40,21 +47,22 @@ namespace Catrobat.IDE.Core.Services.Web
       }
     }
 
-    public string UserToken
+    public LoginInfo LoginInfo
     {
-      get { return userToken_; }
+      get { return loginInfo_;}
       set
       {
-        if (value != userToken_)
+        if (loginInfo_ != value)
         {
-          userToken_ = value;
-          RaisePropertyChanged(nameof(UserToken));
+          loginInfo_ = value;
+
+          RaisePropertyChanged(nameof(LoginInfo));
           RaisePropertyChanged(nameof(IsLoggedIn));
         }
       }
     }
 
-    public bool IsLoggedIn => userToken_ != "";
+    public bool IsLoggedIn => LoginInfo != null;
 
     #endregion
 
@@ -80,23 +88,17 @@ namespace Catrobat.IDE.Core.Services.Web
         return false;
       }
 
-      UserToken = result.token;
+      await UpdateLoginInfo(new LoginInfo
+      {
+        Username = username,
+        Token = result.token
+      });
 
       return true;
     }
 
     public async Task<bool> Login(string username, string password)
     {
-      var ci = new CultureInfo(Windows.System.UserProfile.GlobalizationPreferences.Languages[0]);
-
-      var languageCountry = ci.Name.Split('-');
-
-      if (languageCountry.Length != 2)
-      {
-        //TODO: invalid culture info format error; eg "en-US" expected
-        return false;
-      }
-
       var result = await CommunicationService.Instance.RegisterLoginAsync(username, password);
 
       if (result.statusCode != StatusCodes.ServerResponseOk)
@@ -105,14 +107,20 @@ namespace Catrobat.IDE.Core.Services.Web
         return false;
       }
 
-      UserToken = result.token;
+      await UpdateLoginInfo(new LoginInfo
+      {
+        Username = username,
+        Token = result.token
+      });
 
       return true;
     }
 
     public async Task<bool> Logout()
     {
-      UserToken = "";
+      // TODO: delete token file
+
+      await UpdateLoginInfo(null);
 
       return true;
     }
@@ -123,9 +131,104 @@ namespace Catrobat.IDE.Core.Services.Web
 
     private UserAccountService()
     {
-      //TODO: load token if available?
-      UserToken = "";
+      var checkInfoTask = CheckIfLoginInfoExists();
+
+      checkInfoTask.Wait();
+
+      if (checkInfoTask.Result)
+      {
+        var readInfoTask = ReadLoginInfo();
+
+        readInfoTask.Wait();
+
+        return;
+      }
+
+      LoginInfo = null;
     }
+
+    #endregion
+
+    #region private helpers
+
+    private async Task UpdateLoginInfo(LoginInfo info)
+    {
+      var updateTask = info == null ? DeleteLoginInfo() : WriteLoginInfo();
+
+      LoginInfo = info;
+
+      await updateTask;
+    }
+
+    private async Task WriteLoginInfo()
+    {
+      var folder = ApplicationData.Current.LocalFolder;
+
+      var file = await folder.CreateFileAsync(LoginInfoFileName, 
+        CreationCollisionOption.ReplaceExisting);
+
+      var stream = await file.OpenStreamForWriteAsync();
+
+      var ser = new DataContractSerializer(typeof(LoginInfo));
+
+      ser.WriteObject(stream, LoginInfo);
+
+      await stream.FlushAsync();
+    }
+
+    private async Task ReadLoginInfo()
+    {
+      var folder = ApplicationData.Current.LocalFolder;
+
+      var file = await folder.GetFileAsync(LoginInfoFileName);
+
+      var stream = await file.OpenStreamForReadAsync();
+
+      var ser = new DataContractSerializer(typeof(LoginInfo));
+
+      LoginInfo = (LoginInfo)ser.ReadObject(stream);
+    }
+
+    private async Task DeleteLoginInfo()
+    {
+      var folder = ApplicationData.Current.LocalFolder;
+
+      var file = await folder.GetFileAsync(LoginInfoFileName);
+
+      await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+    }
+
+    private async Task<bool> CheckIfLoginInfoExists()
+    {
+      var folder = ApplicationData.Current.LocalFolder;
+
+      try
+      {
+        var file = await folder.GetFileAsync(LoginInfoFileName);
+      }
+      catch
+      {
+        return false;
+      }
+
+      return true;
+    }
+
+    #endregion
+
+  }
+
+  [DataContract]
+  public class LoginInfo
+  {
+
+    #region Properties
+
+    [DataMember]
+    public string Username { get; set; }
+
+    [DataMember]
+    public string Token { get; set; }
 
     #endregion
 

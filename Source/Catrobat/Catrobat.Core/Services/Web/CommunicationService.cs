@@ -197,8 +197,6 @@ namespace Catrobat.IDE.Core.Services.Web
 
     #endregion
 
-
-
     #endregion
 
     #region construction
