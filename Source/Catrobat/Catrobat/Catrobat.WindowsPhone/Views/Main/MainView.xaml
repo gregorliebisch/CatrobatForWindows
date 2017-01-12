@@ -7,10 +7,14 @@
   xmlns:controls="using:Catrobat.IDE.WindowsPhone.Controls"
   xmlns:controls1="using:WinRTXamlToolkit.Controls"
   xmlns:OnlinePrograms="using:Catrobat.Views.Main.OnlinePrograms"
+  xmlns:converters="using:Catrobat.IDE.Core.UI.Converters"
   mc:Ignorable="d"
   NavigationCacheMode="Enabled"
   DataContext="{Binding MainViewModel, Source={StaticResource Locator}}">
-  
+  <views:ViewPageBase.Resources>
+    <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    <converters:BoolToVisibilityInvertedConverter x:Key="BoolToVisibilityInvertedConverter"/>
+  </views:ViewPageBase.Resources>
   <Grid Background="{ThemeResource AppBackgroundBrush}">
     <Hub Name="MainHub" 
       SectionsInViewChanged="Hub_SectionsInViewChanged" >
@@ -278,11 +282,11 @@
         <AppBarButton 
           x:Uid="Main_Login_Text"
           Command="{Binding LoginCommand}"
-          Visibility="Visible"/>
+          Visibility="{Binding IsLoggedIn, Converter={StaticResource BoolToVisibilityInvertedConverter}}"/>
         <AppBarButton 
           x:Uid="Main_Logout_Text"
           Command="{Binding LogoutCommand}"
-          Visibility="Collapsed"/>
+          Visibility="{Binding IsLoggedIn, Converter={StaticResource BoolToVisibilityConverter}}"/>
       </CommandBar.SecondaryCommands>
     </CommandBar>
   </Page.BottomAppBar>

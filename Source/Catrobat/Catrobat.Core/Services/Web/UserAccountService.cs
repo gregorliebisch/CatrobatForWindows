@@ -110,8 +110,10 @@ namespace Catrobat.IDE.Core.Services.Web
       return true;
     }
 
-    public async Task<bool> Logout(string username, string password)
+    public async Task<bool> Logout()
     {
+      userToken_ = "";
+
       return true;
     }
 

@@ -131,6 +131,8 @@ namespace Catrobat.IDE.Core.ViewModels.Main.UserAccount
       {
         ShowDialog("error occured - please check your input");
       }
+
+      ShowDialog("register successful");
     }
 
     private async void ShowDialog(string message)

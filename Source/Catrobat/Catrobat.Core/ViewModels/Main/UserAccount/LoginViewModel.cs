@@ -127,6 +127,8 @@ namespace Catrobat.IDE.Core.ViewModels.Main.UserAccount
       {
         ShowDialog("error occured - please check your input");
       }
+
+      ShowDialog("login successful");
     }
 
     private async void PasswordForgotten()
