@@ -78,7 +78,7 @@ namespace Catrobat.IDE.Core.ViewModels.Main.UserAccount
 
     public LoginViewModel()
     {
-
+      ResetAttributes();
     }
 
     #endregion
@@ -129,6 +129,10 @@ namespace Catrobat.IDE.Core.ViewModels.Main.UserAccount
       }
 
       ShowDialog("login successful");
+
+      ResetAttributes();
+
+      ServiceLocator.NavigationService.NavigateTo<MainViewModel>();
     }
 
     private async void PasswordForgotten()

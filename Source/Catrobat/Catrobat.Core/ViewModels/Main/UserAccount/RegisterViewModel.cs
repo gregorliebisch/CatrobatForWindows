@@ -133,6 +133,10 @@ namespace Catrobat.IDE.Core.ViewModels.Main.UserAccount
       }
 
       ShowDialog("register successful");
+
+      ResetAttributes();
+
+      ServiceLocator.NavigationService.NavigateTo<MainViewModel>();
     }
 
     private async void ShowDialog(string message)
