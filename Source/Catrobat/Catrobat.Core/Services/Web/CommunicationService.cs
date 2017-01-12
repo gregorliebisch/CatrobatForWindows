@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -21,7 +22,10 @@ namespace Catrobat.IDE.Core.Services.Web
 
     private static volatile CommunicationService instance_;
     private static readonly object SyncRoot = new object();
+
     private bool internetAccessAvailable_;
+
+    //private Queue<>
 
     #endregion
 
@@ -83,7 +87,7 @@ namespace Catrobat.IDE.Core.Services.Web
     public async Task<ProgramInfo> LoadProjectByIdAsync(
       int id,
       CancellationToken token)
-    {     
+    {
       var requestUri = string.Format(
         ApplicationResourcesHelper.Get("API_GET_PROJECT_BY_ID"), id);
 
@@ -120,8 +124,8 @@ namespace Catrobat.IDE.Core.Services.Web
     }
 
     public async Task<List<ProgramInfo>> SearchAsync(
-      string query, 
-      int offset, 
+      string query,
+      int offset,
       int count,
       CancellationToken token)
     {
@@ -140,60 +144,87 @@ namespace Catrobat.IDE.Core.Services.Web
 
     #region user account
 
-    public async Task<JSONStatusResponse> RegisterLoginAsync(string username, string password, string email = "", string languageCode = "", string countryCode = "")
+    public async Task<JSONStatusResponse> RegisterLoginAsync(
+      string username, 
+      string password, 
+      string email = "",
+      string languageCode = "", 
+      string countryCode = "")
     {
       var parameters = new List<KeyValuePair<string, string>>()
       {
-        new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_REG_USERNAME"), username),
-        new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_REG_EMAIL"), email),
-        new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_REG_PASSWORD"), password),
-        new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_REG_COUNTRY"), countryCode),
-        new KeyValuePair<string, string>(ApplicationResourcesHelper.Get("API_PARAM_LANGUAGE"), languageCode)
+        new KeyValuePair<string, string>(
+          ApplicationResourcesHelper.Get("API_PARAM_REG_USERNAME"), 
+          username),
+        new KeyValuePair<string, string>(
+          ApplicationResourcesHelper.Get("API_PARAM_REG_EMAIL"), 
+          email),
+        new KeyValuePair<string, string>(
+          ApplicationResourcesHelper.Get("API_PARAM_REG_PASSWORD"), 
+          password),
+        new KeyValuePair<string, string>(
+          ApplicationResourcesHelper.Get("API_PARAM_REG_COUNTRY"), 
+          countryCode),
+        new KeyValuePair<string, string>(
+          ApplicationResourcesHelper.Get("API_PARAM_LANGUAGE"), 
+          languageCode)
       };
 
-      HttpContent postParameters = new FormUrlEncodedContent(parameters);
+      return await LoadJsonResponse(
+        ApplicationResourcesHelper.Get("API_LOGIN_REGISTER"),
+        parameters, new CancellationToken());
+    }
 
-      using (var httpClient = new HttpClient())
+    public async Task<JSONStatusResponse> CheckLoginInfoAsync(LoginInfo info)
+    {
+      var parameters = new List<KeyValuePair<string, string>>()
       {
-        httpClient.BaseAddress = new Uri(ApplicationResourcesHelper.Get("API_BASE_ADDRESS"));
+        new KeyValuePair<string, string>(
+          ApplicationResourcesHelper.Get("API_PARAM_USERNAME"), 
+          info.Username),
+        new KeyValuePair<string, string>(
+          ApplicationResourcesHelper.Get("API_PARAM_TOKEN"), 
+          info.Token)
+      };
 
-        try
-        {
-          var httpResponse =
-            await httpClient.PostAsync(ApplicationResourcesHelper.Get("API_LOGIN_REGISTER"), postParameters);
-          httpResponse.EnsureSuccessStatusCode();
-
-          var jsonResult = await httpResponse.Content.ReadAsStringAsync();
-          var statusResponse = JsonConvert.DeserializeObject<JSONStatusResponse>(jsonResult);
-
-          return statusResponse;
-        }
-        catch (Exception)
-        {
-          return new JSONStatusResponse { statusCode = StatusCodes.UnknownError };
-        }
-        //catch (HttpRequestException)
-        //{
-        //  statusResponse = new JSONStatusResponse();
-        //  statusResponse.statusCode = StatusCodes.HTTPRequestFailed;
-        //}
-        //catch (Newtonsoft.Json.JsonSerializationException)
-        //{
-        //  statusResponse = new JSONStatusResponse();
-        //  statusResponse.statusCode = StatusCodes.JSONSerializationFailed;
-        //}
-        //catch (Exception)
-        //{
-        //  statusResponse = new JSONStatusResponse();
-        //  statusResponse.statusCode = StatusCodes.UnknownError;
-        //}
-        //return statusResponse;
-      }
+      return await LoadJsonResponse(
+        ApplicationResourcesHelper.Get("API_CHECK_TOKEN"), 
+        parameters, new CancellationToken());
     }
 
     #endregion
 
     #region project down- & upload
+
+    public async Task<Stream> DownloadAsync(
+      string downloadUrl,
+      CancellationToken token)
+    {
+      var httpClient = new HttpClient
+      {
+        BaseAddress = new Uri(ApplicationResourcesHelper.Get("POCEKTCODE_BASE_ADDRESS"))
+      };
+
+      try
+      {
+        var httpResponse = await httpClient.GetAsync(
+          downloadUrl, HttpCompletionOption.ResponseContentRead, token);
+
+        httpResponse.EnsureSuccessStatusCode();
+
+        var stream = await httpResponse.Content.ReadAsStreamAsync();
+
+        InternetAccessAvailable = true;
+
+        return stream;
+      }
+      catch
+      {
+        InternetAccessAvailable = false;
+      }
+
+      return null;
+    }
 
     #endregion
 
@@ -209,12 +240,14 @@ namespace Catrobat.IDE.Core.Services.Web
 
     #region private helpers
 
-    private async Task<OnlineProgramOverview> LoadAndDeserializeProjects(string requestUri, CancellationToken token)
+    private async Task<OnlineProgramOverview> LoadAndDeserializeProjects(
+      string requestUri, 
+      CancellationToken token)
     {
       var httpClient = new HttpClient
       {
         BaseAddress = new Uri(
-         ApplicationResourcesHelper.Get("API_BASE_ADDRESS"))
+          ApplicationResourcesHelper.Get("API_BASE_ADDRESS"))
       };
 
       try
@@ -232,7 +265,7 @@ namespace Catrobat.IDE.Core.Services.Web
 
         return programOverview;
       }
-      catch (Exception)
+      catch
       {
         InternetAccessAvailable = false;
       }
@@ -244,6 +277,75 @@ namespace Catrobat.IDE.Core.Services.Web
       };
     }
 
+    private async Task<JSONStatusResponse> LoadJsonResponse(
+      string requestUri,
+      IEnumerable<KeyValuePair<string, string>> parameters, 
+      CancellationToken token)
+    {
+      var httpClient = new HttpClient
+      {
+        BaseAddress = new Uri(
+          ApplicationResourcesHelper.Get("API_BASE_ADDRESS"))
+      };
+
+      JSONStatusResponse statusResponse;
+
+      try
+      {
+        HttpContent postParameters = new FormUrlEncodedContent(parameters);
+
+        var httpResponse = await httpClient.PostAsync(
+          requestUri, postParameters, token);
+
+        httpResponse.EnsureSuccessStatusCode();
+
+        var jsonResult = await httpResponse.Content.ReadAsStringAsync();
+
+        InternetAccessAvailable = true;
+
+        statusResponse = JsonConvert.
+          DeserializeObject<JSONStatusResponse>(jsonResult);
+      }
+      catch (HttpRequestException ex)
+      {
+        var isUnauthorizedException = ex.Message.Contains("401");
+
+        if (isUnauthorizedException)
+        {
+          statusResponse = new JSONStatusResponse
+          {
+            statusCode = StatusCodes.ServerResponseUserDoesNotExist
+          };
+        }
+        else
+        {
+          InternetAccessAvailable = false;
+
+          statusResponse = new JSONStatusResponse
+          {
+            statusCode = StatusCodes.HTTPRequestFailed
+          };
+        }     
+      }
+      catch (JsonSerializationException)
+      {
+        statusResponse = new JSONStatusResponse
+        {
+          statusCode = StatusCodes.JSONSerializationFailed
+        };
+      }
+      catch (Exception)
+      {
+        statusResponse = new JSONStatusResponse
+        {
+          statusCode = StatusCodes.UnknownError
+        };
+      }
+
+      return statusResponse;
+    }
+
     #endregion
+
   }
 }

@@ -5,6 +5,7 @@ using Catrobat.IDE.Core.Services;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Catrobat.Core.Resources.Localization;
+using Catrobat.IDE.Core.Services.Web;
 
 namespace Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms
 {
@@ -15,8 +16,8 @@ namespace Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms
     private bool _linkIsVisible;
     private bool _isDownloading;
 
-    private readonly object _importLock = new object();
-    private MessageboxResult _cancelImportCallbackResult;
+    //private readonly object _importLock = new object();
+    //private MessageboxResult _cancelImportCallbackResult;
 
     #endregion
 
@@ -89,47 +90,51 @@ namespace Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms
       Program = message.Content;
     }
 
-    private async void Download()
+    private void Download()
     {
-      // TODO: Taken from previous version, needs to be redone.
-      lock (_importLock)
-      {
-        if (IsDownloading)
-        {
-          ServiceLocator.NotifictionService.ShowMessageBox(
-              AppResourcesHelper.Get("Main_OnlineProgramLoading"),
-              AppResourcesHelper.Get("Main_OnlineProgramDownloadBusy"),
-              CancelImportCallback, MessageBoxOptions.OkCancel);
-          return;
-        }
+      ImportExportService.Instance.ImportProgram(Program);
 
-        IsDownloading = true;
-      }
+      //// TODO: Taken from previous version, needs to be redone.
+      //lock (_importLock)
+      //{
+      //  if (IsDownloading)
+      //  {
+      //    ServiceLocator.NotifictionService.ShowMessageBox(
+      //        AppResourcesHelper.Get("Main_OnlineProgramLoading"),
+      //        AppResourcesHelper.Get("Main_OnlineProgramDownloadBusy"),
+      //        CancelImportCallback, MessageBoxOptions.OkCancel);
+      //    return;
+      //  }
 
-      var message = new GenericMessage<string>(Program.Name);
-      Messenger.Default.Send(message, ViewModelMessagingToken.DownloadProgramStartedListener);
+      //  IsDownloading = true;
+      //}
 
-      try
-      {
-        ServiceLocator.DispatcherService.RunOnMainThread(() =>
-            ServiceLocator.NavigationService.NavigateBack<ProgramsViewModel>());
+      //var message = new GenericMessage<string>(Program.Name);
+      //Messenger.Default.Send(message, ViewModelMessagingToken.DownloadProgramStartedListener);
 
-        ServiceLocator.ProgramImportService.SetDownloadHeader(Program);
-        await Task.Run(() => ServiceLocator.ProgramImportService.TryImportWithStatusNotifications()).ConfigureAwait(false);
-      }
-      finally
-      {
-        ServiceLocator.DispatcherService.RunOnMainThread(() =>
-        {
-          lock (_importLock) { IsDownloading = false; }
-        });
-      }
+      //try
+      //{
+      //  ServiceLocator.DispatcherService.RunOnMainThread(() =>
+      //      ServiceLocator.NavigationService.NavigateBack<ProgramsViewModel>());
+
+      //  ServiceLocator.ProgramImportService.SetDownloadHeader(Program);
+      //  await Task.Run(() => ServiceLocator.ProgramImportService.TryImportWithStatusNotifications()).ConfigureAwait(false);
+      //}
+      //finally
+      //{
+      //  ServiceLocator.DispatcherService.RunOnMainThread(() =>
+      //  {
+      //    lock (_importLock) { IsDownloading = false; }
+      //  });
+      //}
     }
 
-    private async void CancelDownload()
+    private void CancelDownload()
     {
-      // TODO: Taken from previous version, needs to be redone.
-      await ServiceLocator.ProgramImportService.CancelImport();
+      ImportExportService.Instance.CancelImport(Program);
+
+      //// TODO: Taken from previous version, needs to be redone.
+      //await ServiceLocator.ProgramImportService.CancelImport();
     }
 
     private void Report()
@@ -142,15 +147,15 @@ namespace Catrobat.IDE.Core.ViewModels.Main.OnlinePrograms
       LinkIsVisible = true;
     }
 
-    private void CancelImportCallback(MessageboxResult result)
-    {
-      // TODO: Taken from previous version, needs to be redone.
-      _cancelImportCallbackResult = result;
-      if (_cancelImportCallbackResult == MessageboxResult.Cancel)
-      {
-        ServiceLocator.ProgramImportService.CancelImport();
-      }
-    }
+    //private void CancelImportCallback(MessageboxResult result)
+    //{
+    //  // TODO: Taken from previous version, needs to be redone.
+    //  _cancelImportCallbackResult = result;
+    //  if (_cancelImportCallbackResult == MessageboxResult.Cancel)
+    //  {
+    //    ServiceLocator.ProgramImportService.CancelImport();
+    //  }
+    //}
 
     #endregion
   }

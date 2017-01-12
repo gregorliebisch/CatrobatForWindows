@@ -68,7 +68,10 @@ namespace Catrobat.IDE.Core.Services.Web
 
     #region public methods
 
-    public async Task<bool> Register(string username, string email, string password)
+    public async Task<bool> Register(
+      string username, 
+      string email, 
+      string password)
     {
       var ci = new CultureInfo(Windows.System.UserProfile.GlobalizationPreferences.Languages[0]);
 
@@ -116,10 +119,15 @@ namespace Catrobat.IDE.Core.Services.Web
       return true;
     }
 
+    public async Task<bool> CheckLoginInfo(LoginInfo info)
+    {
+      var result = await CommunicationService.Instance.CheckLoginInfoAsync(info);
+
+      return result.statusCode == StatusCodes.ServerResponseOk;
+    }
+
     public async Task<bool> Logout()
     {
-      // TODO: delete token file
-
       await UpdateLoginInfo(null);
 
       return true;
@@ -131,13 +139,13 @@ namespace Catrobat.IDE.Core.Services.Web
 
     private UserAccountService()
     {
-      var checkInfoTask = CheckIfLoginInfoExists();
+      var checkInfoTask = LoginInfoFileExists();
 
       checkInfoTask.Wait();
 
       if (checkInfoTask.Result)
       {
-        var readInfoTask = ReadLoginInfo();
+        var readInfoTask = ReadLoginInfoFile();
 
         readInfoTask.Wait();
 
@@ -153,14 +161,16 @@ namespace Catrobat.IDE.Core.Services.Web
 
     private async Task UpdateLoginInfo(LoginInfo info)
     {
-      var updateTask = info == null ? DeleteLoginInfo() : WriteLoginInfo();
+      var updateTask = info == null 
+        ? DeleteLoginInfoFile() 
+        : WriteLoginInfoFile();
 
       LoginInfo = info;
 
       await updateTask;
     }
 
-    private async Task WriteLoginInfo()
+    private async Task WriteLoginInfoFile()
     {
       var folder = ApplicationData.Current.LocalFolder;
 
@@ -176,7 +186,7 @@ namespace Catrobat.IDE.Core.Services.Web
       await stream.FlushAsync();
     }
 
-    private async Task ReadLoginInfo()
+    private async Task ReadLoginInfoFile()
     {
       var folder = ApplicationData.Current.LocalFolder;
 
@@ -186,10 +196,23 @@ namespace Catrobat.IDE.Core.Services.Web
 
       var ser = new DataContractSerializer(typeof(LoginInfo));
 
-      LoginInfo = (LoginInfo)ser.ReadObject(stream);
+      var info = (LoginInfo)ser.ReadObject(stream);
+
+      var isValid = await CheckLoginInfo(info);
+
+      if (!isValid)
+      {
+        await DeleteLoginInfoFile();
+
+        LoginInfo = null;
+
+        return;
+      }
+
+      LoginInfo =  info;
     }
 
-    private async Task DeleteLoginInfo()
+    private async Task DeleteLoginInfoFile()
     {
       var folder = ApplicationData.Current.LocalFolder;
 
@@ -198,7 +221,7 @@ namespace Catrobat.IDE.Core.Services.Web
       await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
     }
 
-    private async Task<bool> CheckIfLoginInfoExists()
+    private async Task<bool> LoginInfoFileExists()
     {
       var folder = ApplicationData.Current.LocalFolder;
 
